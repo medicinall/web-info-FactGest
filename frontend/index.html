@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactuGest - WebInformatique-Sarl</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-file-invoice"></i>
+                <h1>FactuGest</h1>
+                <span class="company">WebInformatique-Sarl</span>
+            </div>
+            <div class="user-info">
+                <span id="username">Utilisateur</span>
+                <button id="logout-btn" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="factures">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Toutes les factures</span>
+            </button>
+            <button class="nav-tab" data-tab="clients">
+                <i class="fas fa-users"></i>
+                <span>Gestion des clients</span>
+            </button>
+            <button class="nav-tab" data-tab="nouveau-client">
+                <i class="fas fa-user-plus"></i>
+                <span>Créer un client</span>
+            </button>
+            <button class="nav-tab" data-tab="admin">
+                <i class="fas fa-cog"></i>
+                <span>Administration</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Onglet Toutes les factures -->
+        <section id="factures-tab" class="tab-content active">
+            <div class="tab-header">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Toutes les factures</h2>
+                <button id="nouvelle-facture-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nouvelle facture
+                </button>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filter-statut">Statut :</label>
+                    <select id="filter-statut">
+                        <option value="">Tous</option>
+                        <option value="brouillon">Brouillon</option>
+                        <option value="envoyee">Envoyée</option>
+                        <option value="payee">Payée</option>
+                        <option value="en_retard">En retard</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-facture">Rechercher :</label>
+                    <input type="text" id="search-facture" placeholder="Numéro de facture ou client...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="factures-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Échéance</th>
+                            <th>Montant TTC</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Les factures seront chargées ici -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Onglet Gestion des clients -->
+        <section id="clients-tab" class="tab-content">
+            <div class="tab-header">
+                <h2><i class="fas fa-users"></i> Gestion des clients</h2>
+                <button id="nouveau-client-btn" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Nouveau client
+                </button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="search-client">Rechercher :</label>
+                    <input type="text" id="search-client" placeholder="Nom, prénom ou entreprise...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="clients-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Entreprise</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Ville</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Les clients seront chargés ici -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Onglet Créer un client -->
+        <section id="nouveau-client-tab" class="tab-content">
+            <div class="tab-header">
+                <h2><i class="fas fa-user-plus"></i> Créer un nouveau client</h2>
+            </div>
+
+            <form id="client-form" class="form-container">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="client-nom">Nom *</label>
+                        <input type="text" id="client-nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-prenom">Prénom *</label>
+                        <input type="text" id="client-prenom" name="prenom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-entreprise">Entreprise</label>
+                        <input type="text" id="client-entreprise" name="entreprise">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-siret">SIRET</label>
+                        <input type="text" id="client-siret" name="siret">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="client-adresse">Adresse</label>
+                        <textarea id="client-adresse" name="adresse" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-ville">Ville</label>
+                        <input type="text" id="client-ville" name="ville">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-code-postal">Code postal</label>
+                        <input type="text" id="client-code-postal" name="code_postal">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-telephone">Téléphone</label>
+                        <input type="tel" id="client-telephone" name="telephone">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-email">Email</label>
+                        <input type="email" id="client-email" name="email">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="reset-client-form" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i> Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer le client
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Onglet Administration -->
+        <section id="admin-tab" class="tab-content">
+            <div class="tab-header">
+                <h2><i class="fas fa-cog"></i> Administration</h2>
+            </div>
+
+            <div class="admin-grid">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-clients">0</h3>
+                            <p>Clients</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-factures">0</h3>
+                            <p>Factures</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-euro-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="montant-total">0 €</h3>
+                            <p>Chiffre d'affaires</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3><i class="fas fa-clock"></i> Activité récente</h3>
+                    <div id="recent-factures">
+                        <!-- Les factures récentes seront chargées ici -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modales -->
+    <!-- Modale pour créer/modifier une facture -->
+    <div id="facture-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="facture-modal-title">Nouvelle facture</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="facture-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="facture-numero">Numéro de facture *</label>
+                        <input type="text" id="facture-numero" name="numero_facture" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-client">Client *</label>
+                        <select id="facture-client" name="client_id" required>
+                            <option value="">Sélectionner un client</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-date">Date de facture *</label>
+                        <input type="date" id="facture-date" name="date_facture" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-echeance">Date d'échéance *</label>
+                        <input type="date" id="facture-echeance" name="date_echeance" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-statut">Statut</label>
+                        <select id="facture-statut" name="statut">
+                            <option value="brouillon">Brouillon</option>
+                            <option value="envoyee">Envoyée</option>
+                            <option value="payee">Payée</option>
+                            <option value="en_retard">En retard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-montant-ht">Montant HT *</label>
+                        <input type="number" id="facture-montant-ht" name="montant_ht" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facture-taux-tva">Taux TVA (%)</label>
+                        <input type="number" id="facture-taux-tva" name="taux_tva" step="0.01" value="20.00">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="facture-description">Description</label>
+                        <textarea id="facture-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="facture-notes">Notes</label>
+                        <textarea id="facture-notes" name="notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary modal-close">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modale de confirmation -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Confirmation</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Êtes-vous sûr de vouloir effectuer cette action ?</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="confirm-cancel">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirm-ok">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
+
