@@ -20,7 +20,6 @@ function showNotification(message, type = 'info') {
     notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.remove();
     }, 5000);
@@ -43,14 +42,13 @@ async function generatePDF(factureId) {
     try {
         showLoading();
         showNotification('Génération du PDF en cours...', 'info');
-        
+
         const response = await fetch(`${API_BASE_URL}/factures/${factureId}/pdf`);
-        
+
         if (!response.ok) {
             throw new Error('Erreur lors de la génération du PDF');
         }
-        
-        // Récupérer le nom du fichier depuis les en-têtes
+
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'facture.pdf';
         if (contentDisposition) {
@@ -59,22 +57,17 @@ async function generatePDF(factureId) {
                 filename = filenameMatch[1];
             }
         }
-        
-        // Créer un blob avec le contenu PDF
+
         const blob = await response.blob();
-        
-        // Créer un lien de téléchargement
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
-        
-        // Nettoyer
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
+
         showNotification('PDF téléchargé avec succès', 'success');
     } catch (error) {
         showNotification('Erreur lors de la génération du PDF: ' + error.message, 'error');
@@ -83,7 +76,6 @@ async function generatePDF(factureId) {
     }
 }
 
-// API Calls
 async function apiCall(endpoint, options = {}) {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -93,13 +85,13 @@ async function apiCall(endpoint, options = {}) {
             },
             ...options
         });
-        
+
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.error || 'Erreur API');
         }
-        
+
         return data;
     } catch (error) {
         console.error('Erreur API:', error);
@@ -107,24 +99,20 @@ async function apiCall(endpoint, options = {}) {
     }
 }
 
-// Gestion des onglets
 function initTabs() {
     const tabButtons = document.querySelectorAll('.nav-tab');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             const tabName = button.dataset.tab;
-            
-            // Mettre à jour les boutons
+
             tabButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
-            // Mettre à jour le contenu
+
             tabContents.forEach(content => content.classList.remove('active'));
             document.getElementById(`${tabName}-tab`).classList.add('active');
-            
-            // Charger les données si nécessaire
+
             loadTabData(tabName);
         });
     });
@@ -144,7 +132,6 @@ function loadTabData(tabName) {
     }
 }
 
-// Gestion des clients
 async function loadClients() {
     try {
         showLoading();
@@ -162,7 +149,7 @@ async function loadClients() {
 function renderClientsTable() {
     const tbody = document.querySelector('#clients-table tbody');
     tbody.innerHTML = '';
-    
+
     clients.forEach(client => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -179,8 +166,7 @@ function renderClientsTable() {
                 <button class="action-btn delete" onclick="deleteClient(${client.id})" title="Supprimer">
                     <i class="fas fa-trash"></i>
                 </button>
-            </td>
-        `;
+            </td>`;
         tbody.appendChild(row);
     });
 }
@@ -188,7 +174,7 @@ function renderClientsTable() {
 function updateClientSelect() {
     const select = document.getElementById('facture-client');
     select.innerHTML = '<option value="">Sélectionner un client</option>';
-    
+
     clients.forEach(client => {
         const option = document.createElement('option');
         option.value = client.id;
@@ -405,10 +391,6 @@ function editFacture(id) {
     openModal('facture-modal');
 }
 
-function generatePDF(id) {
-    showNotification('Génération PDF en cours de développement', 'info');
-}
-
 // Gestion des modales
 function openModal(modalId) {
     document.getElementById(modalId).classList.add('show');
@@ -476,148 +458,13 @@ function initFilters() {
     document.getElementById('search-facture').addEventListener('input', filterFactures);
     
     // Filtre pour les clients
-    document.getElementById('search-client').addEventListener('input', filterClients);
-}
-
-function filterFactures() {
-    const statutFilter = document.getElementById('filter-statut').value;
-    const searchTerm = document.getElementById('search-facture').value.toLowerCase();
-    
-    const rows = document.querySelectorAll('#factures-table tbody tr');
-    
-    rows.forEach(row => {
-        const statut = row.querySelector('.status').textContent;
-        const numero = row.cells[0].textContent.toLowerCase();
-        const client = row.cells[1].textContent.toLowerCase();
-        
-        const matchesStatut = !statutFilter || statut === statutFilter;
-        const matchesSearch = !searchTerm || numero.includes(searchTerm) || client.includes(searchTerm);
-        
-        row.style.display = matchesStatut && matchesSearch ? '' : 'none';
-    });
-}
-
-function filterClients() {
-    const searchTerm = document.getElementById('search-client').value.toLowerCase();
-    const rows = document.querySelectorAll('#clients-table tbody tr');
-    
-    rows.forEach(row => {
-        const nom = row.cells[0].textContent.toLowerCase();
-        const prenom = row.cells[1].textContent.toLowerCase();
-        const entreprise = row.cells[2].textContent.toLowerCase();
-        
-        const matches = nom.includes(searchTerm) || 
-                       prenom.includes(searchTerm) || 
-                       entreprise.includes(searchTerm);
-        
-        row.style.display = matches ? '' : 'none';
-    });
 }
 
 // Initialisation
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialiser les onglets
+document.addEventListener('DOMContentLoaded', () => {
     initTabs();
-    
-    // Initialiser les filtres
     initFilters();
     
-    // Gestionnaires d'événements pour les formulaires
-    document.getElementById('client-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const clientData = Object.fromEntries(formData.entries());
-        
-        const editId = this.dataset.editId;
-        if (editId) {
-            updateClient(editId, clientData);
-        } else {
-            saveClient(clientData);
-        }
-    });
-    
-    document.getElementById('facture-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const factureData = Object.fromEntries(formData.entries());
-        
-        // Convertir les types appropriés
-        factureData.client_id = parseInt(factureData.client_id);
-        factureData.montant_ht = parseFloat(factureData.montant_ht);
-        factureData.taux_tva = parseFloat(factureData.taux_tva);
-        
-        const editId = this.dataset.editId;
-        if (editId) {
-            updateFacture(editId, factureData);
-        } else {
-            saveFacture(factureData);
-        }
-    });
-    
-    // Boutons pour ouvrir les modales
-    document.getElementById('nouvelle-facture-btn').addEventListener('click', function() {
-        openModal('facture-modal');
-    });
-    
-    document.getElementById('nouveau-client-btn').addEventListener('click', function() {
-        document.querySelector('[data-tab="nouveau-client"]').click();
-    });
-    
-    // Bouton pour réinitialiser le formulaire client
-    document.getElementById('reset-client-form').addEventListener('click', resetClientForm);
-    
-    // Gestionnaires pour fermer les modales
-    document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            closeModal(modal.id);
-        });
-    });
-    
-    // Fermer les modales en cliquant à l'extérieur
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal(this.id);
-            }
-        });
-    });
-    
-    // Charger les données initiales
-    loadClients();
-    loadFactures();
-    
-    // Simuler un utilisateur connecté
-    currentUser = { username: 'admin', role: 'admin' };
-    document.getElementById('username').textContent = currentUser.username;
-    
-    // Gestionnaire de déconnexion
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-            // Ici on pourrait appeler l'API de déconnexion
-            showNotification('Déconnexion réussie', 'success');
-            // Rediriger vers la page de connexion ou recharger
-            location.reload();
-        }
-    });
-    
-    // Générer automatiquement le numéro de facture
-    document.getElementById('nouvelle-facture-btn').addEventListener('click', function() {
-        const year = new Date().getFullYear();
-        const count = factures.length + 1;
-        const numeroFacture = `FACT-${year}-${count.toString().padStart(4, '0')}`;
-        document.getElementById('facture-numero').value = numeroFacture;
-        
-        // Date par défaut
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('facture-date').value = today;
-        
-        // Date d'échéance par défaut (30 jours)
-        const echeance = new Date();
-        echeance.setDate(echeance.getDate() + 30);
-        document.getElementById('facture-echeance').value = echeance.toISOString().split('T')[0];
-    });
-});
-
+    // Charge l'onglet par défaut
+    loadTabData('factures');
+});%                                                                                                                                                                                                                 
